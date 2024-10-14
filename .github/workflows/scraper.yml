@@ -36,7 +36,7 @@ jobs:
     
     # Run the scraper script
     - name: Run scraper
-      run: python your_script.py  # Replace with your script name
+      run: python scraper.py  # Replace with your script name
     
     # Commit and push changes
     - name: Commit and push changes
