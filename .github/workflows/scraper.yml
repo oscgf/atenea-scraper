@@ -28,11 +28,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # Run the scraper script
-    - name: Run the script
-      env:
-        SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
-        PASSWORD: ${{ secrets.PASSWORD }}
-        RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+    # Configure Git
+    - name: Configure Git
       run: |
-        python scraper.py
+        git config --global user.email "oscargonzalezfresno@gmail.com"
+        git config --global user.name "Óscar González Fresno"
+    
+    # Run the scraper script
+    - name: Run scraper
+      run: python your_script.py  # Replace with your script name
+    
+    # Commit and push changes
+    - name: Commit and push changes
+      run: |
+        git add job_offers.csv
+        git commit -m "Update job offers with new data"
+        git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/oscgf/ateneo-scraper.git HEAD:main
