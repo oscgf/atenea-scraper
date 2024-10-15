@@ -8,6 +8,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 
+# Url to fecth the job offers from
+URL = "https://aplicaciones.uc3m.es/atenea/publico/1/listarConvocatorias"
 
 def load_env_variables():
     """
@@ -23,6 +25,7 @@ def load_env_variables():
         'sender_password': os.getenv("PASSWORD"),
         'receiver_email': os.getenv("RECEIVER_EMAIL")
     }
+
 
 def print_env_variables(env_vars):
     """
@@ -93,7 +96,7 @@ def send_email(new_offers, sender_email, sender_password, receiver_email):
         <p>Hola,</p>
         <p>Se han detectado las siguientes nuevas ofertas de trabajo:</p>
         {offers_html}
-        <a href="https://aplicaciones.uc3m.es/atenea/publico/1/listarConvocatorias">Accede al listado completo</a>
+        <a href={URL}>Accede al listado completo</a>
         <br>
         <p>Un saludo,<br>Yo mismo</p>
     </body>
@@ -128,31 +131,28 @@ def main():
     # Load environment variables (email credentials)
     env_vars = load_env_variables()
 
+    # Debug enviroment variables (email credentials)
     print_env_variables(env_vars)
 
-    new_offers = pd.read_csv('job_offers.csv')
-    send_email(new_offers.iloc[0:2], env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
-    
-    # # Fetch job offers
-    # url = "https://aplicaciones.uc3m.es/atenea/publico/1/listarConvocatorias"
-    # current_offers = fetch_job_offers(url)
+    # Fetch job offers
+    current_offers = fetch_job_offers(URL)
 
-    # # Check for new offers
-    # previous_offers_file = 'job_offers.csv'
-    # new_offers, has_new_offers = check_new_offers(current_offers, previous_offers_file)
+    # Check for new offers
+    previous_offers_file = 'job_offers.csv'
+    new_offers, has_new_offers = check_new_offers(current_offers, previous_offers_file)
 
-    # # If new offers are found, notify and update the CSV
-    # if has_new_offers:
-    #     print("New offers detected:")
-    #     print(new_offers)
+    # If new offers are found, notify and update the CSV
+    if has_new_offers:
+        print("New offers detected:")
+        print(new_offers)
 
-    #     # Send email notification
-    #     send_email(new_offers, env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
+        # Send email notification
+        send_email(new_offers, env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
 
-    #     # Save new offers to CSV and commit changes to GitHub
-    #     save_changes(current_offers, previous_offers_file)
-    # else:
-    #     print("No new offers detected :(")
+        # Save new offers to CSV and commit changes to GitHub
+        save_changes(current_offers, previous_offers_file)
+    else:
+        print("No new offers detected :(")
 
 
 if __name__ == "__main__":
