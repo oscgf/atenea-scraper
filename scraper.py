@@ -23,6 +23,14 @@ def load_env_variables():
         'receiver_email': os.getenv("RECEIVER_EMAIL")
     }
 
+def print_env_variables(env_vars):
+    """
+    Print the loaded environment variables.
+    """
+    print("Sender Email:", env_vars.get('sender_email'))
+    print("Sender Password:", env_vars.get('sender_password'))
+    print("Receiver Email:", env_vars.get('receiver_email'))
+
 
 def fetch_job_offers(url):
     """
@@ -115,6 +123,8 @@ def main():
     # Load environment variables (email credentials)
     env_vars = load_env_variables()
 
+    print_env_variables(env_vars)
+    
     new_offers = pd.read_csv('job_offers.csv')
     send_email(new_offers.iloc[0:2], env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
     
