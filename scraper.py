@@ -125,7 +125,7 @@ def save_changes_and_commit(df, previous_offers_file):
     """
     df.to_csv(previous_offers_file, index=False)
     print(f"The CSV file '{previous_offers_file}' has been updated with new offers.")
-    git_push()
+    #git_push()
 
 
 def git_push():
