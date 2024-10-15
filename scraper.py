@@ -28,9 +28,13 @@ def print_env_variables(env_vars):
     """
     Print the loaded environment variables.
     """
-    print("Sender Email:", env_vars.get('sender_email'))
-    print("Sender Password:", env_vars.get('sender_password'))
-    print("Receiver Email:", env_vars.get('receiver_email'))
+    if env_vars.get('sender_email') and env_vars.get('sender_password') and env_vars.get('receiver_email'):
+        print("Secrets loaded successfully!")
+        print("Sender Email:", env_vars.get('sender_email'))
+        print("Sender Password:", env_vars.get('sender_password'))
+        print("Receiver Email:", env_vars.get('receiver_email'))
+    else:
+        print("Failed to load secrets. Please check the GitHub Secrets configuration.")
 
 
 def fetch_job_offers(url):
