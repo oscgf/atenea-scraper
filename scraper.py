@@ -80,6 +80,7 @@ def send_email(new_offers, sender_email, sender_password, receiver_email):
         <p>Hola,</p>
         <p>Se han detectado las siguientes nuevas ofertas de trabajo:</p>
         {offers_html}
+        <a href="https://aplicaciones.uc3m.es/atenea/publico/1/listarConvocatorias">Accede al listado completo</a>
         <br>
         <p>Un saludo,<br>Yo mismo</p>
     </body>
@@ -94,6 +95,7 @@ def send_email(new_offers, sender_email, sender_password, receiver_email):
 
     try:
         with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.set_debuglevel(10)
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, receiver_email, message.as_string())
             print("Email sent successfully!")
@@ -113,26 +115,29 @@ def main():
     # Load environment variables (email credentials)
     env_vars = load_env_variables()
 
-    # Fetch job offers
-    url = "https://aplicaciones.uc3m.es/atenea/publico/1/listarConvocatorias"
-    current_offers = fetch_job_offers(url)
+    new_offers = pd.read_csv('job_offers.csv')
+    send_email(new_offers.iloc[0:2], env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
+    
+    # # Fetch job offers
+    # url = "https://aplicaciones.uc3m.es/atenea/publico/1/listarConvocatorias"
+    # current_offers = fetch_job_offers(url)
 
-    # Check for new offers
-    previous_offers_file = 'job_offers.csv'
-    new_offers, has_new_offers = check_new_offers(current_offers, previous_offers_file)
+    # # Check for new offers
+    # previous_offers_file = 'job_offers.csv'
+    # new_offers, has_new_offers = check_new_offers(current_offers, previous_offers_file)
 
-    # If new offers are found, notify and update the CSV
-    if has_new_offers:
-        print("New offers detected:")
-        print(new_offers)
+    # # If new offers are found, notify and update the CSV
+    # if has_new_offers:
+    #     print("New offers detected:")
+    #     print(new_offers)
 
-        # Send email notification
-        send_email(new_offers, env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
+    #     # Send email notification
+    #     send_email(new_offers, env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
 
-        # Save new offers to CSV and commit changes to GitHub
-        save_changes(current_offers, previous_offers_file)
-    else:
-        print("No new offers detected :(")
+    #     # Save new offers to CSV and commit changes to GitHub
+    #     save_changes(current_offers, previous_offers_file)
+    # else:
+    #     print("No new offers detected :(")
 
 
 if __name__ == "__main__":
