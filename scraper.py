@@ -119,12 +119,22 @@ def send_email(new_offers, sender_email, sender_password, receiver_email):
         print(f"Failed to send email: {e}")
 
 
-def save_changes(df, previous_offers_file):
+def save_changes_and_commit(df, previous_offers_file):
     """
     Save the updated offers to the CSV.
     """
     df.to_csv(previous_offers_file, index=False)
     print(f"The CSV file '{previous_offers_file}' has been updated with new offers.")
+    git_push()
+
+
+def git_push():
+    """
+    Commit and push changes to GitHub.
+    """
+    subprocess.run(["git", "add", "job_offers.csv"])
+    subprocess.run(["git", "commit", "-m", "Update job offers with new data"])
+    subprocess.run(["git", "push"])
 
 
 def main():
@@ -150,7 +160,7 @@ def main():
         send_email(new_offers, env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
 
         # Save new offers to CSV and commit changes to GitHub
-        save_changes(current_offers, previous_offers_file)
+        save_changes_and_commit(current_offers, previous_offers_file)
     else:
         print("No new offers detected :(")
 
