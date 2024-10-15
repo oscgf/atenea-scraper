@@ -52,9 +52,18 @@ jobs:
         RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
       run: python scraper.py  # Replace with your script name
     
-    # Commit and push changes
-    - name: Commit and push changes
+    # Commit and push changes only if there are any changes in job_offers.csv
+    - name: Check for changes
+      id: check_changes
       run: |
         git add job_offers.csv
+        git diff --cached --exit-code || echo "Changes detected" > changes_detected
+
+    # Commit and push changes if there are any
+    - name: Commit and push changes
+      if: steps.check_changes.outputs.changes_detected != ''
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "GitHub Actions Bot"
         git commit -m "Update job offers with new data"
-        git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/oscgf/ateneo-scraper.git HEAD:main
+        git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/oscgf/atenea-scraper.git HEAD:main
