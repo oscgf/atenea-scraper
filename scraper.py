@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 
-# Url to fecth the job offers from
+# URL to fetch job offers from the UC3M Atenea platform
 URL = "https://aplicaciones.uc3m.es/atenea/publico/1/listarConvocatorias"
 
 def load_env_variables():
@@ -16,7 +16,7 @@ def load_env_variables():
     Load environment variables from .env file if running locally.
     """
     if os.getenv("GITHUB_ACTIONS") is None:
-        print("Running locally")
+        print("Running locally...")
         load_dotenv()
 
     # Load email credentials from environment variables
@@ -33,9 +33,6 @@ def print_env_variables(env_vars):
     """
     if env_vars.get('sender_email') and env_vars.get('sender_password') and env_vars.get('receiver_email'):
         print("Secrets loaded successfully!")
-        print("Sender Email:", env_vars.get('sender_email'))
-        print("Sender Password:", env_vars.get('sender_password'))
-        print("Receiver Email:", env_vars.get('receiver_email'))
     else:
         print("Failed to load secrets. Please check the GitHub Secrets configuration.")
 
@@ -47,7 +44,7 @@ def fetch_job_offers(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    offers = soup.select('table > tbody > tr')  # Corrected selector to `select`
+    offers = soup.select('table > tbody > tr')
     all_offers_data = []
 
     for offer in offers:
@@ -119,22 +116,12 @@ def send_email(new_offers, sender_email, sender_password, receiver_email):
         print(f"Failed to send email: {e}")
 
 
-def save_changes_and_commit(df, previous_offers_file):
+def save_changes(df, previous_offers_file):
     """
     Save the updated offers to the CSV.
     """
     df.to_csv(previous_offers_file, index=False)
     print(f"The CSV file '{previous_offers_file}' has been updated with new offers.")
-    #git_push()
-
-
-def git_push():
-    """
-    Commit and push changes to GitHub.
-    """
-    subprocess.run(["git", "add", "job_offers.csv"])
-    subprocess.run(["git", "commit", "-m", "Update job offers with new data"])
-    subprocess.run(["git", "push"])
 
 
 def main():
@@ -160,7 +147,7 @@ def main():
         send_email(new_offers, env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
 
         # Save new offers to CSV and commit changes to GitHub
-        save_changes_and_commit(current_offers, previous_offers_file)
+        save_changes(current_offers, previous_offers_file)
     else:
         print("No new offers detected :(")
 

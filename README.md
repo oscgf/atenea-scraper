@@ -57,7 +57,7 @@ python your_script.py
 ```
 
 ## GitHub Actions Automation
-This project is also configured to run automatically using GitHub Actions. The GitHub Actions workflow is located in `.github/workflows/job-alert.yml`.
+This project is also configured to run automatically using GitHub Actions. The GitHub Actions workflow is located in `.github/workflows/scraper.yml`.
 
 ### 1. Setup GitHub Secrets
 In order to send email notifications using GitHub Actions, you need to configure the following secrets in your GitHub repository:
@@ -70,6 +70,13 @@ In order to send email notifications using GitHub Actions, you need to configure
  - `SENDER_EMAIL`: Your sender email address.
  - `PASSWORD`: Your email app password.
  - `RECEIVER_EMAIL`: The email address that will receive notifications.
+ 
+If you want to commit and push automatically the changes when the job offers ara updated, ensure that `GITHUB_TOKEN` is enabled and has write permissions:
+
+5. Navigate to **Settings > Actions > General**.
+6. Scroll down to **Workflow permissions**.
+7. Ensure **"Read and write permissions"** is selected for `GITHUB_TOKEN`.
+8. Also, check **"Allow GitHub Actions to create and approve pull requests"** if you plan to use that in the future.
 
 ### 2. Running the Workflow Manually
 To run the workflow manually (in case you don't want to wait for the scheduled time):
@@ -79,7 +86,7 @@ To run the workflow manually (in case you don't want to wait for the scheduled t
 3. Click the **Run workflow** button on the right side to manually trigger the job.
 
 ### 3. Scheduled Workflow
-The scraper is configured to run every day at 9:00 AM UTC. You can change this schedule by modifying the `cron` expression in `.github/workflows/job-alert.yml`:
+The scraper is configured to run every day at 9:00 AM UTC. You can change this schedule by modifying the `cron` expression in `.github/workflows/scraper.yml`:
 
 ```bash
 on:
@@ -103,7 +110,5 @@ If you encounter any issues while running the scraper locally, make sure:
 
 You can also review logs in GitHub Actions for any issues with the automation process.
 
-## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
+## Contributions
 Feel free to contribute to this project or suggest new features!
