@@ -14,6 +14,7 @@ def load_env_variables():
     Load environment variables from .env file if running locally.
     """
     if os.getenv("GITHUB_ACTIONS") is None:
+        print("Running locally")
         load_dotenv()
 
     # Load email credentials from environment variables
@@ -124,7 +125,7 @@ def main():
     env_vars = load_env_variables()
 
     print_env_variables(env_vars)
-    
+
     new_offers = pd.read_csv('job_offers.csv')
     send_email(new_offers.iloc[0:2], env_vars['sender_email'], env_vars['sender_password'], env_vars['receiver_email'])
     
