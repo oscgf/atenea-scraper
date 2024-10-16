@@ -2,8 +2,8 @@ name: Run Web Scraper
 
 on:
     schedule:
-        # Schedule the script to run at 08:00 UTC every day
-        - cron: "0 8 * * *"
+        # Schedule the script to run every 15 minutes
+        - cron: "0/15 * * * *"
     # This enables manual triggering
     workflow_dispatch:
 
