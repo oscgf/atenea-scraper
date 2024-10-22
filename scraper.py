@@ -57,7 +57,8 @@ def fetch_job_offers(url):
             'Fecha fin solicitud': parts[4],
             'Estado': parts[5]
         }
-        all_offers_data.append(data)
+        if data['Estado'].lower() == "inicial":
+            all_offers_data.append(data)
 
     return pd.DataFrame(all_offers_data)
 
