@@ -50,14 +50,14 @@ def fetch_job_offers(url):
     for offer in offers:
         parts = offer.getText().strip().split('\n')
         data = {
-            'Código': parts[0],
-            'Título': parts[1],
-            'Responsable': parts[2],
-            'Fecha inicio solicitud': parts[3],
-            'Fecha fin solicitud': parts[4],
-            'Estado': parts[5]
+            'Code': parts[0],
+            'Title': parts[1],
+            'Responsible': parts[2],
+            'Request Start Date': parts[3],
+            'Request End Date': parts[4],
+            'Status': parts[5]
         }
-        if data['Estado'].lower() == "inicial":
+        if data['Status'].lower() == "inicial":
             all_offers_data.append(data)
 
     return pd.DataFrame(all_offers_data)
@@ -68,12 +68,12 @@ def check_new_offers(df, previous_offers_file):
     Compare the current job offers with the previous ones and return new offers.
     """
     try:
-        previous_offers = pd.read_csv(previous_offers_file)
+        previous_offers = pd.read_csv(previous_offers_file, encoding="utf-8")
     except FileNotFoundError:
         print("No previous offers found, treating all as new.")
         return df, True
 
-    new_offers = df[~df['Código'].isin(previous_offers['Código'])]
+    new_offers = df[~df['Code'].isin(previous_offers['Code'])]
     return new_offers, not new_offers.empty
 
 
